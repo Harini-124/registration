@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration Form</title>
+  <!-- Include Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-8">
+  <div class="max-w-md mx-auto bg-white p-6 rounded-md shadow-md mb-8">
+    <h2 class="text-2xl font-semibold mb-4">Registration Form</h2>
+    <form id="registrationForm">
+      <label for="name" class="block mb-2">Name *</label>
+      <input type="text" id="name" name="name" required class="w-full border-gray-300 rounded-md px-4 py-2 mb-4">
+      
+      <label for="email" class="block mb-2">Email *</label>
+      <input type="email" id="email" name="email" required class="w-full border-gray-300 rounded-md px-4 py-2 mb-4">
+      
+      <label for="password" class="block mb-2">Password *</label>
+      <input type="password" id="password" name="password" required class="w-full border-gray-300 rounded-md px-4 py-2 mb-4">
+      
+      <label for="dob" class="block mb-2">Date of Birth *</label>
+      <input type="date" id="dob" name="dob" required class="w-full border-gray-300 rounded-md px-4 py-2 mb-4">
+      
+      <input type="checkbox" id="terms" name="terms" required class="mr-2">
+      <label for="terms">I accept the terms and conditions *</label><br><br>
+      
+      <input type="submit" value="Submit" class="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer">
+    </form>
+  </div>
+
+  <div class="max-w-full mx-auto">
+    <table id="userData" class="hidden w-full border-collapse">
+      <caption class="text-lg font-semibold mb-4">Entries</caption>
+      <thead>
+        <tr>
+          <th class="border border-gray-300 px-4 py-2">Name</th>
+          <th class="border border-gray-300 px-4 py-2">Email</th>
+          <th class="border border-gray-300 px-4 py-2">Password</th>
+          <th class="border border-gray-300 px-4 py-2">Date of Birth</th>
+          <th class="border border-gray-300 px-4 py-2">Accepted Terms</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- User data will be inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load existing user data from local storage on page load
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      const table = document.getElementById('userData');
+      const tbody = table.querySelector('tbody');
+
+      // Populate the table with existing user data
+      users.forEach(user => {
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+          <td class="border border-gray-300 px-4 py-2">${user.name}</td>
+          <td class="border border-gray-300 px-4 py-2">${user.email}</td>
+          <td class="border border-gray-300 px-4 py-2">${user.password}</td>
+          <td class="border border-gray-300 px-4 py-2">${user.dob}</td>
+          <td class="border border-gray-300 px-4 py-2">${user.termsAccepted}</td>
+        `;
+        tbody.appendChild(newRow);
+      });
+      
+      // Show the table if there is any existing data
+      if (users.length > 0) {
+        table.classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const dob = document.getElementById('dob').value;
+      const termsAccepted = document.getElementById('terms').checked;
+      
+      // Create an object to store user data
+      const userData = {
+        name: name,
+        email: email,
+        password: password,
+        dob: dob,
+        termsAccepted: termsAccepted ? 'true' : 'false' // Convert boolean to string for display
+      };
+      
+      // Save user data to local storage
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      users.push(userData);
+      localStorage.setItem('users', JSON.stringify(users));
+      
+      // Display submitted data in the table
+      const table = document.getElementById('userData');
+      const tbody = table.querySelector('tbody');
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td class="border border-gray-300 px-4 py-2">${name}</td>
+        <td class="border border-gray-300 px-4 py-2">${email}</td>
+        <td class="border border-gray-300 px-4 py-2">${password}</td>
+        <td class="border border-gray-300 px-4 py-2">${dob}</td>
+        <td class="border border-gray-300 px-4 py-2">${userData.termsAccepted}</td>
+      `;
+      tbody.appendChild(newRow);
+      
+      // Show the table
+      table.classList.remove('hidden');
+      
+      // Clear the form fields after submission
+      document.getElementById('registrationForm').reset();
+    });
+  </script>
+</body>
+</html>
